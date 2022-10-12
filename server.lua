@@ -1,21 +1,6 @@
 QBCore = nil
 TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
 
-RegisterServerEvent('esx_givecarkeys:setVehicleOwnedPlayerId')
-AddEventHandler('esx_givecarkeys:setVehicleOwnedPlayerId', function (playerId, vehicleProps, key)
-	local src = source
-		local zPlayer = QBCore.Functions.GetPlayer(playerId)
-		exports.ghmattimysql:execute('UPDATE owned_vehicles SET citizenid = @citizenid WHERE plate = @plate', {
-			['@citizenid'] = zPlayer.PlayerData.citizenid,
-			['@plate'] = vehicleProps.plate
-		}, function()
-			TriggerEvent('DiscordBot:ToDiscord', 'aracdevret', vehicleProps.plate .." Plakalı Aracını Devretti", src, zPlayer.PlayerData.source)
-			TriggerClientEvent("QBCore:Notify", zPlayer.PlayerData.source, vehicleProps.plate..' plakalı aracın anahtarını aldın!')
-			TriggerClientEvent("tgiann-arackilit:plakaekle", zPlayer.PlayerData.source, vehicleProps.plate)
-			TriggerClientEvent("tgiann-arackilit:plakaekle-xhotwire", zPlayer.PlayerData.source, vehicleProps.plate)
-		end)
-end)
-
 QBCore.Commands.Add("givecar", "Bir oyuncunun datasına araç ver (only god", {}, true, function(source, args)
 	TriggerClientEvent("ra1der:givecar", source)
 end, "god")
