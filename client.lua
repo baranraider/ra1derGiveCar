@@ -50,7 +50,7 @@ RegisterNetEvent("ra1der:givecar", function()
 	end
 	QBCore.Functions.TriggerCallback('ra1der:givecar:check', function(result)
 		if result then 
-			BCore.Functions.Notify(keyboard.input.. " ID'li kişiye" ..keyboard.input2.. " İsimli Araç Verildi", "success", 5000)
+			QBCore.Functions.Notify(keyboard.input.. " ID'li kişiye" ..keyboard.input2.. " İsimli Araç Verildi", "success", 5000)
 		else 
 			QBCore.Functions.Notify(keyboard.input.. " ID'li oyuncu bulunamadı", "error")
 		end
