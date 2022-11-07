@@ -25,6 +25,26 @@ AddEventHandler('spawnVehicle:client', function(vehiclemodel, type)
 	end)
 end)
 
+--NEW QBCORE İçin
+-- RegisterNetEvent('spawnVehicle:client')
+-- AddEventHandler('spawnVehicle:client', function(vehiclemodel, plate, type)
+-- 	local PlayerData = QBCore.Functions.GetPlayerData()
+-- 	local playerPed = PlayerPedId()
+-- 	local pCoords = GetEntityCoords(playerPed)
+-- 	pCoords = vector4(pCoords.x, pCoords.y, pCoords.z, GetEntityHeading(PlayerPedId()))
+-- 	QBCore.Functions.SpawnVehicle(vehiclemodel, function(vehicle)
+-- 		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
+
+-- 		local newPlate     = plate
+-- 		local vehicleProps = QBCore.Functions.GetVehicleProperties(vehicle)
+-- 		vehicleProps.plate = newPlate
+-- 		SetVehicleNumberPlateText(vehicle, newPlate)
+-- 		TriggerServerEvent('giveCar', vehicleProps, vehiclemodel, type)
+-- 		-- TriggerEvent("qb-vehiclekeys:client:GiveKeys", GetPlayerServerId(PlayerId()))
+-- 		TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(vehicle))
+-- 	end, pCoords, 1)
+-- end)
+
 RegisterNetEvent("ra1der:givecar", function()
 	local keyboard = exports['qb-input']:ShowInput({
 		header = "Bir oyuncuya araç verin",
