@@ -1,49 +1,31 @@
-QBCore = nil
-Citizen.CreateThread(function()
-    while QBCore == nil do
-        TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-        Citizen.Wait(200)
-    end
-end)
+local QBCore = exports['qb-core']:GetCoreObject()
 
 RegisterNetEvent('spawnVehicle:client')
-AddEventHandler('spawnVehicle:client', function(vehiclemodel, type)
-	local PlayerData = QBCore.Functions.GetPlayerData()
-	local playerPed = PlayerPedId()
-	local pCoords = GetEntityCoords(playerPed)
-	QBCore.Functions.SpawnVehicle(vehiclemodel, pCoords, 1, function (vehicle)
-		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
+AddEventHandler('spawnVehicle:client', function(vehiclemodel, plate, type)
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    local playerPed = PlayerPedId()
+    local pCoords = GetEntityCoords(playerPed)
+    pCoords = vector4(pCoords.x, pCoords.y, pCoords.z, GetEntityHeading(playerPed))
 
-		local newPlate     = GeneratePlate()
-		local vehicleProps = QBCore.Functions.GetVehicleProperties(vehicle)
-		vehicleProps.plate = newPlate
-		SetVehicleNumberPlateText(vehicle, newPlate)
+    QBCore.Functions.SpawnVehicle(vehiclemodel, function(vehicle)
+        TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 
-		TriggerServerEvent('saveVehicle', vehicleProps, type)
-		TriggerClientEvent("tgiann-arackilit:plakaekle", zPlayer.PlayerData.source, newPlate)
-		TriggerClientEvent("tgiann-arackilit:plakaekle-xhotwire", zPlayer.PlayerData.source, newPlate)
-	end)
+        local newPlate = plate
+        local vehicleProps = QBCore.Functions.GetVehicleProperties(vehicle)
+        vehicleProps.plate = newPlate
+        SetVehicleNumberPlateText(vehicle, newPlate)
+
+ 
+        QBCore.Functions.TriggerCallback('giveCarCallback', function(success)
+            if success then
+                QBCore.Functions.Notify("Araç başarıyla verildi!", "success")
+            else
+                QBCore.Functions.Notify("Araç verilirken bir hata oluştu veya yetkin yok!", "error")
+                DeleteEntity(vehicle)
+            end
+        end, vehicleProps, vehiclemodel, type)
+    end, pCoords, 1)
 end)
-
---NEW QBCORE İçin
--- RegisterNetEvent('spawnVehicle:client')
--- AddEventHandler('spawnVehicle:client', function(vehiclemodel, plate, type)
--- 	local PlayerData = QBCore.Functions.GetPlayerData()
--- 	local playerPed = PlayerPedId()
--- 	local pCoords = GetEntityCoords(playerPed)
--- 	pCoords = vector4(pCoords.x, pCoords.y, pCoords.z, GetEntityHeading(PlayerPedId()))
--- 	QBCore.Functions.SpawnVehicle(vehiclemodel, function(vehicle)
--- 		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
-
--- 		local newPlate     = plate
--- 		local vehicleProps = QBCore.Functions.GetVehicleProperties(vehicle)
--- 		vehicleProps.plate = newPlate
--- 		SetVehicleNumberPlateText(vehicle, newPlate)
--- 		TriggerServerEvent('giveCar', vehicleProps, vehiclemodel, type)
--- 		-- TriggerEvent("qb-vehiclekeys:client:GiveKeys", GetPlayerServerId(PlayerId()))
--- 		TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(vehicle))
--- 	end, pCoords, 1)
--- end)
 
 RegisterNetEvent("ra1der:givecar", function()
 	local keyboard = exports['qb-input']:ShowInput({
@@ -74,10 +56,8 @@ RegisterNetEvent("ra1der:givecar", function()
 		else 
 			QBCore.Functions.Notify(keyboard.input.. " ID'li oyuncu bulunamadı", "error")
 		end
-	
 	end, keyboard)
 end)
-
 
 
 
